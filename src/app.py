@@ -147,6 +147,41 @@ def create_favorite_character(character_id):
         }
    return jsonify (response_body), 200
 
+@app.route('/signup', methods=['POST'])
+def create_user():
+    request_body = request.json
+    user_query = User.query.filter_by(email = request_body["email"]).first()
+    if user_query is None:
+        create_user = User(email = request_body["email"], password = request_body["password"], is_active = request_body["is_active"],userName = request_body["userName"])
+        db.session.add(create_user)
+        db.session.commit()
+        response_body = {
+             "msg": "Usuario creado con exito"
+            }
+        return jsonify(response_body), 200
+    else:
+        response_body = {
+             "msg": "Usuario ya existe"
+            }
+        return jsonify(response_body), 404
+    
+@app.route('/login', methods=['POST'])
+def login_user():
+    request_body = request.json
+    email = request_body.get("email")
+    password = request_body.get("password")
+    user_login = User.query.filter_by(email = request_body["email"]).first()
+    if user_login is None:
+        response_body = {
+             "msg": "Usuario no existe"
+            }
+        return jsonify(response_body), 404
+    elif email != user_login.email or password != user_login.password:
+        return jsonify({"msg": "Usuario o contraseña incorrecta"}), 404
+    else:
+        return jsonify({ "user_id": user_login.userId })
+
+
 @app.route('/favorite/character/<int:character_id>', methods=['DELETE'])
 def delete_favorite_character(character_id):
    request_body = request.json

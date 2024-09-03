@@ -115,7 +115,7 @@ class Favorites(db.Model):
             "id":self.id,
             "userID":self.userId,
             "characterId":self.characterId,
-            "planetId": self.planet,
+            "planetId": self.planetId,
             "vehicleId": self.vehicleId,
 
         }
